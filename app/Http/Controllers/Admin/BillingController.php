@@ -27,7 +27,7 @@ class BillingController extends Controller
             $paymentMethods       = auth()->user()->paymentMethods();
             $defaultPaymentMethod = auth()->user()->defaultPaymentMethod();
         }
-        
+
         $payments = Payment::where('user_id', auth()->id())->latest()->get();
 
         $countries = Country::orderBy('priority','desc')
@@ -58,9 +58,9 @@ class BillingController extends Controller
             if ($currentPlan) {
                 $user->subscription('default')->swap($plan->stripe_plan_id);
             } else {
-                $user->user()->newSubscription('default', $plan->stripe_plan_id)->create($paymentMethod);
+                auth()->user()->newSubscription('default', $plan->stripe_plan_id)->create($paymentMethod);
                 Payment::create([
-                    'user_id'     => $user->id(),
+                    'user_id'     => auth()->id(),
                     'plan_id'     => $plan->id,
                     'paid_amount' => $plan->price,
                 ]);
