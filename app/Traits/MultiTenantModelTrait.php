@@ -23,7 +23,12 @@ trait MultiTenantModelTrait
 
             if (!$isAdmin) {
                 static::addGlobalScope('created_by_id', function (Builder $builder) {
-                    $builder->where('created_by_id', auth()->id())->orWhereNull('created_by_id');
+                    $builder->where('created_by_id', auth()->id())
+                        ->when(get_class($builder->getModel()) == 'App\Project', function ($query) {
+                            $query->orWhereHas('collaborators', function ($query) {
+                                    return $query->where('id', auth()->id());
+                                });
+                        });
                 });
             }
         }

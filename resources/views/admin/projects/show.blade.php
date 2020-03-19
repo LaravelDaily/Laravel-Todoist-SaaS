@@ -58,6 +58,88 @@
     </div>
 </div>
 
+@if(auth()->user()->is_admin || $project->created_by_id == auth()->id())
+    <div class="card">
+        <div class="card-header">
+            Collaborators
+        </div>
+
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Status
+                        </th>
+                        <th>
+                            &nbsp;
+                        </th>
+                    </tr>
+                    @foreach($project->collaborators as $collaborator)
+                        <tr>
+                            <td>
+                                {{ $collaborator->name }}
+                            </td>
+                            <td>
+                                {{ $collaborator->email }}
+                            </td>
+                            <td>
+                                {{ $collaborator->pivot->confirmed_at ? 'Confirmed' : 'Not confirmed' }}
+                            </td>
+                            <td>
+                                @can('user_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $collaborator->id) }}">
+                                        {{ trans('global.view') }}
+                                    </a>
+                                @endcan
+
+                                @can('user_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $collaborator->id) }}">
+                                        {{ trans('global.edit') }}
+                                    </a>
+                                @endcan
+
+                                @can('user_delete')
+                                    <form action="{{ route('admin.users.destroy', $collaborator->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    </form>
+                                @endcan
+
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <form method="POST" action="{{ route("admin.projects.invite", $project->id) }}" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Invite by email</label>
+                    <input class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" type="email" name="email" id="email" value="{{ old('email') }}" required>
+                    @if($errors->has('email'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('email') }}
+                        </div>
+                    @endif
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-danger" type="submit">
+                        Invite
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+@endif
+
 <div class="card">
     <div class="card-header">
         {{ trans('global.relatedData') }}

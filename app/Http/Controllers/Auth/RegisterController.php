@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Role;
 use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -67,6 +68,14 @@ class RegisterController extends Controller
 
         if ($role) {
             $user->roles()->attach($role->id);
+        }
+
+        $projects = DB::table('project_user')->where('email', $data['email']);
+        if ($projects->exists()) {
+            $projects->update([
+                'user_id'      => $user->id,
+                'confirmed_at' => now(),
+            ]);
         }
 
         return $user;

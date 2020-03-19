@@ -20,6 +20,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('users', 'UsersController');
 
     // Projects
+    Route::post('projects/{project}/invite', 'ProjectsController@invite')->name('projects.invite');
+    Route::get('projects/{project}/accept', 'ProjectsController@acceptInvitation')->name('projects.acceptInvitation');
     Route::delete('projects/destroy', 'ProjectsController@massDestroy')->name('projects.massDestroy');
     Route::resource('projects', 'ProjectsController');
 

@@ -37,4 +37,9 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'created_by_id');
     }
+
+    public function collaborators()
+    {
+        return $this->belongsToMany(User::class)->withPivot('confirmed_at', 'email');
+    }
 }
