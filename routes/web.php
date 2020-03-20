@@ -26,6 +26,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('projects', 'ProjectsController');
 
     // Tasks
+    Route::post('tasks/{task}/comment', 'TasksController@comment')->name('tasks.comment');
     Route::delete('tasks/destroy', 'TasksController@massDestroy')->name('tasks.massDestroy');
     Route::resource('tasks', 'TasksController');
 

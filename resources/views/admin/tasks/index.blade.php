@@ -45,6 +45,9 @@
                             {{ trans('cruds.task.fields.send_reminder') }}
                         </th>
                         <th>
+                            {{ trans('cruds.task.fields.comments') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -72,6 +75,11 @@
                             </td>
                             <td>
                                 <input type="checkbox" disabled="disabled" {{ Gate::check('reminders') && $task->send_reminder ? 'checked' : '' }}>
+                            </td>
+                            <td>
+                                @if($task->comments_count)
+                                    <a href="{{ route('admin.tasks.show', $task->id) }}#comments">{{ $task->comments_count }}</a>
+                                @endif
                             </td>
                             <td>
                                 @can('task_show')

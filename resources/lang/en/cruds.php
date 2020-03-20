@@ -103,6 +103,8 @@ return [
             'due_date_helper'      => '',
             'send_reminder'        => 'Remind me by email',
             'send_reminder_helper' => '',
+            'comments'             => 'Comments',
+            'comments_helper'      => '',
             'created_at'           => 'Created at',
             'created_at_helper'    => '',
             'updated_at'           => 'Updated at',

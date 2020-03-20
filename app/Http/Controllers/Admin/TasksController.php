@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyTaskRequest;
+use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Project;
@@ -18,7 +19,7 @@ class TasksController extends Controller
     {
         abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $tasks = Task::all();
+        $tasks = Task::with('project')->withCount('comments')->get();
 
         return view('admin.tasks.index', compact('tasks'));
     }
@@ -61,7 +62,7 @@ class TasksController extends Controller
     {
         abort_if(Gate::denies('task_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $task->load('project');
+        $task->load('project', 'comments.user');
 
         return view('admin.tasks.show', compact('task'));
     }
@@ -80,5 +81,17 @@ class TasksController extends Controller
         Task::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function comment(StoreCommentRequest $request, Task $task)
+    {
+        abort_if(Gate::denies('comments'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $task->comments()->create([
+            'user_id'      => auth()->id(),
+            'comment_text' => $request->input('comment_text'),
+        ]);
+
+        return redirect()->back()->withMessage('Comment has been successfully posted');
     }
 }
