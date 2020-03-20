@@ -61,7 +61,11 @@ class ProjectsController extends Controller
 
         $project->load('projectTasks');
 
-        $collaborators = DB::table('project_user')->leftJoin('users as user', 'user_id', '=', 'id')->get();
+        $collaborators = DB::table('project_user')
+            ->where('project_id', $project->id)
+            ->leftJoin('users', 'user_id', '=', 'id')
+            ->select('project_user.email', 'project_user.confirmed_at', 'users.id', 'users.name')
+            ->get();
 
         return view('admin.projects.show', compact('project', 'collaborators'));
     }

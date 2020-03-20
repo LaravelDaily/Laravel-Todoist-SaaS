@@ -81,38 +81,39 @@
                             &nbsp;
                         </th>
                     </tr>
-                    @foreach($project->collaborators as $collaborator)
+                    @foreach($collaborators as $collaborator)
                         <tr>
                             <td>
-                                {{ $collaborator->name }}
+                                {{ $collaborator->name ?? '' }}
                             </td>
                             <td>
                                 {{ $collaborator->email }}
                             </td>
                             <td>
-                                {{ $collaborator->pivot->confirmed_at ? 'Confirmed' : 'Not confirmed' }}
+                                {{ $collaborator->confirmed_at ? 'Confirmed' : 'Not confirmed' }}
                             </td>
                             <td>
-                                @can('user_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $collaborator->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
+                                @if($collaborator->id)
+                                    @can('user_show')
+                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $collaborator->id) }}">
+                                            {{ trans('global.view') }}
+                                        </a>
+                                    @endcan
 
-                                @can('user_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $collaborator->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
+                                    @can('user_edit')
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $collaborator->id) }}">
+                                            {{ trans('global.edit') }}
+                                        </a>
+                                    @endcan
 
-                                @can('user_delete')
-                                    <form action="{{ route('admin.users.destroy', $collaborator->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
+                                    @can('user_delete')
+                                        <form action="{{ route('admin.users.destroy', $collaborator->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        </form>
+                                    @endcan
+                                @endif
                             </td>
                         </tr>
                     @endforeach
