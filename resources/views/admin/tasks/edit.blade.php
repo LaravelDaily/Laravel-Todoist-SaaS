@@ -73,9 +73,39 @@
                     </div>
                 @endif
                 @cannot('reminders')
-                    <small>Only Premium plan. <a href="{{ route('admin.billing.index') }}">Upgrade your plan</a></small>
+                    <small>This field is only for Premium users. <a href="{{ route('admin.billing.index') }}">Upgrade your plan</a></small>
                 @endcannot
                 <span class="help-block">{{ trans('cruds.task.fields.send_reminder_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="labels">{{ trans('cruds.task.fields.labels') }}</label>
+                @can('labels')
+                    <div style="padding-bottom: 4px">
+                        <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
+                        <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
+                    </div>
+                @endcan
+                <select
+                    class="form-control select2 {{ $errors->has('labels') ? 'is-invalid' : '' }}"
+                    name="labels[]"
+                    id="labels"
+                    multiple
+                    required
+                    {{ Gate::denies('labels') ? 'disabled' : '' }}
+                >
+                    @foreach($labels as $id => $labels)
+                        <option value="{{ $id }}" {{ (in_array($id, old('labels', [])) || $task->labels->contains($id)) ? 'selected' : '' }}>{{ $labels }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('labels'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('labels') }}
+                    </div>
+                @endif
+                @cannot('labels')
+                    <small>This field is only for Premium users. <a href="{{ route('admin.billing.index') }}">Upgrade your plan</a></small>
+                @endcannot
+                <span class="help-block">{{ trans('cruds.task.fields.labels_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

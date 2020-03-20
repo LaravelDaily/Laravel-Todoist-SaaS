@@ -74,6 +74,14 @@
                     </a>
                 </li>
             @endcan
+            <li class="nav-item">
+                <a href="{{ route("admin.labels.index") }}" class="nav-link {{ request()->is('admin/labels') || request()->is('admin/labels/*') ? 'active' : '' }}">
+                    <i class="fa-fw fas fa-cogs nav-icon">
+
+                    </i>
+                    {{ trans('cruds.label.title') }}
+                </a>
+            </li>
             @if (!auth()->user()->isAdmin)
                 <li class="nav-item">
                     <a href="{{ route("admin.billing.index") }}" class="nav-link">

@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyTaskRequest;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Label;
 use App\Project;
 use App\Task;
 use Gate;
@@ -19,7 +20,14 @@ class TasksController extends Controller
     {
         abort_if(Gate::denies('task_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $tasks = Task::with('project')->withCount('comments')->get();
+        $tasks = Task::with('project', 'labels')
+            ->withCount('comments')
+            ->when(request()->input('label_id'), function ($query) {
+                $query->whereHas('labels', function ($query) {
+                    $query->where('id', request()->input('label_id'));
+                });
+            })
+            ->get();
 
         return view('admin.tasks.index', compact('tasks'));
     }
@@ -29,13 +37,18 @@ class TasksController extends Controller
         abort_if(Gate::denies('task_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $projects = Project::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $labels   = Label::all()->pluck('name', 'id');
 
-        return view('admin.tasks.create', compact('projects'));
+        return view('admin.tasks.create', compact('projects', 'labels'));
     }
 
     public function store(StoreTaskRequest $request)
     {
         $task = Task::create($request->all());
+
+        if (Gate::check('labels')) {
+            $task->labels()->sync($request->input('labels'));
+        }
 
         return redirect()->route('admin.tasks.index');
     }
@@ -45,15 +58,20 @@ class TasksController extends Controller
         abort_if(Gate::denies('task_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $projects = Project::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $labels   = Label::all()->pluck('name', 'id');
 
         $task->load('project');
 
-        return view('admin.tasks.edit', compact('projects', 'task'));
+        return view('admin.tasks.edit', compact('projects', 'labels', 'task'));
     }
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->all());
+
+        if (Gate::check('labels')) {
+            $task->labels()->sync($request->input('labels'));
+        }
 
         return redirect()->route('admin.tasks.index');
     }

@@ -38,6 +38,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('payment_methods/default/{paymentMethod}', 'PaymentMethodController@markDefault')->name('payment_methods.default');
     Route::resource('payment_methods', 'PaymentMethodController');
+
+    // Labels
+    Route::delete('labels/destroy', 'LabelsController@massDestroy')->name('labels.massDestroy');
+    Route::resource('labels', 'LabelsController');
 });
 
 // User profile group

@@ -67,6 +67,16 @@
                             @endcannot
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.labels') }}
+                        </th>
+                        <td>
+                            @foreach($task->labels as $key => $item)
+                                <a href="{{ route('admin.tasks.index') }}?label_id={{ $item->id }}" class="badge badge-info">{{ $item->name }}</a>
+                            @endforeach
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

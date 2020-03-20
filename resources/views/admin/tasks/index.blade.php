@@ -48,6 +48,9 @@
                             {{ trans('cruds.task.fields.comments') }}
                         </th>
                         <th>
+                            {{ trans('cruds.task.fields.labels') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -80,6 +83,11 @@
                                 @if($task->comments_count)
                                     <a href="{{ route('admin.tasks.show', $task->id) }}#comments">{{ $task->comments_count }}</a>
                                 @endif
+                            </td>
+                            <td>
+                                @foreach($task->labels as $key => $item)
+                                    <a href="{{ route('admin.tasks.index') }}?label_id={{ $item->id }}" class="badge badge-info">{{ $item->name }}</a>
+                                @endforeach
                             </td>
                             <td>
                                 @can('task_show')
