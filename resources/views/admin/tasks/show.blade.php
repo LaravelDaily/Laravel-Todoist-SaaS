@@ -47,6 +47,26 @@
                             {{ $task->project->name ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.due_date') }}
+                        </th>
+                        <td>
+                            {{ $task->due_date ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.send_reminder') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ Gate::check('reminders') && $task->send_reminder ? 'checked' : '' }}>
+                            @cannot('reminders')
+                                <br>
+                                <small>Only Premium plan. <a href="{{ route('admin.billing.index') }}">Upgrade your plan</a></small>
+                            @endcannot
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

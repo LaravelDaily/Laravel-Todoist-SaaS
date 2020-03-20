@@ -39,6 +39,12 @@
                             {{ trans('cruds.task.fields.project') }}
                         </th>
                         <th>
+                            {{ trans('cruds.task.fields.due_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.task.fields.send_reminder') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -60,6 +66,12 @@
                             </td>
                             <td>
                                 {{ $task->project->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $task->due_date ?? '' }}
+                            </td>
+                            <td>
+                                <input type="checkbox" disabled="disabled" {{ Gate::check('reminders') && $task->send_reminder ? 'checked' : '' }}>
                             </td>
                             <td>
                                 @can('task_show')

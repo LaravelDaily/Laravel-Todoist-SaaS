@@ -44,6 +44,39 @@
                 <span class="help-block">{{ trans('cruds.task.fields.project_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="due_date">{{ trans('cruds.task.fields.due_date') }}</label>
+                <input class="form-control date {{ $errors->has('due_date') ? 'is-invalid' : '' }}" type="text" name="due_date" id="due_date" value="{{ old('due_date') }}">
+                @if($errors->has('due_date'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('due_date') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.task.fields.due_date_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <div class="form-check {{ $errors->has('send_reminder') ? 'is-invalid' : '' }}">
+                    <input type="hidden" name="send_reminder" value="0">
+                    <input class="form-check-input"
+                        type="checkbox"
+                        name="send_reminder"
+                        id="send_reminder"
+                        value="1"
+                        {{ Gate::check('reminders') && old('send_reminder', 0) === 1 ? 'checked' : '' }}
+                        {{ !Gate::check('reminders') ? 'disabled' : '' }}
+                    >
+                    <label class="form-check-label" for="send_reminder">{{ trans('cruds.task.fields.send_reminder') }}</label>
+                </div>
+                @if($errors->has('send_reminder'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('send_reminder') }}
+                    </div>
+                @endif
+                @cannot('reminders')
+                    <small>Only Premium plan. <a href="{{ route('admin.billing.index') }}">Upgrade your plan</a></small>
+                @endcannot
+                <span class="help-block">{{ trans('cruds.task.fields.send_reminder_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
