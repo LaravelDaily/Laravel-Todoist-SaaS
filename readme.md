@@ -33,7 +33,6 @@ Code boilerplate to start Laravel project with plans and user subscriptions.
 - Run `composer install`
 - Run `php artisan key:generate`
 - Run `php artisan migrate --seed` (it has some seeded data for your testing)
-- If you want to have seeded 50 testing users, run `php artisan db:seed --class=DummySubscriptionsSeeder`
 - That's it: launch the main URL and login with default credentials `admin@admin.com` - `password`
 - You can click Register or go to `/register` URL and create a new user which would have Free Plan role by default
 
